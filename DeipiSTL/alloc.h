@@ -49,18 +49,49 @@ namespace deipiSTL {
 
     //Second level, maintainung a chain list named memory_pool which is the solution of memory request less than 128B
     //If memory request more than 128B, then use first level
-    template <class threads>
+    template <bool threads>
     class second_level_allocator {
     private:
-        const static short N_MAX_BLOCKS = 16;      //block nums
-        const static short MAX_BYTE = 128;         //max size of each block
-        const static short MIN_BYTE = 8;           //min size of each block
+        constexpr static short MAX_BYTE = 128;                          //max size of each block
+        constexpr static short MIN_BYTE = 8;                            //min size of each block
+        constexpr static short N_MAX_BLOCKS = MAX_BYTE / MIN_BYTE;      //block nums
+        
+        static char* start_mem_pool;
+        static char* end_mem_pool;
+        
+        static size_t alloc_weight;                                 //weight increasing along with alloc times
+        
     private:
-        static inline size_t round_off(size_t bytes) {
+        static inline size_t Round_UP(size_t bytes) {
             return ((bytes + MIN_BYTE - 1) & ~(MIN_BYTE - 1));      //memory every allocted will round into 8
         }
-    private:
-
+        
+        //unit block in free-list, sizeof mem_block is equal to a pointer <= 8. client_data is VLA
+        union mem_block{
+            union mem_block* next_block;
+            char client_data[1];
+        };
+        
+        //memory chain combined by 16 blocks
+        static volatile mem_block* mem_block_chain[N_MAX_BLOCKS];
+        
+        //calculate the index of chain
+        static inline size_t Chain_Index(size_t size){
+            // x / 8 is incorrect, because when x = 8, index = 1.
+            return (((size + MIN_BYTE - 1) / MIN_BYTE) - 1);
+        }
+        
+        //return obj which size is n.
+        //might join other blocks into chain
+        static void* Refill(size_t);
+        //alloc a large memory block, which size is num_objs * n
+        //num_objs is not a fixed value
+        static char* Chunk_Alloc(size_t, int&);         //reference is necessary when num of blocks less than 20
+        
+    public:
+        static void* Allocate(size_t);
+        static void* Reallocate(void*, size_t, size_t);
+        static void Deallocate(void*, size_t);
     };
 }
 
