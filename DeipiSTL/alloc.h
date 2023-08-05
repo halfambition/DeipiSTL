@@ -1,6 +1,6 @@
 //in case of conflict with other libs, the DeipiSTL's macro definition is rear underline
-#ifndef ALLOC_
-#define ALLOC_
+#ifndef ALLOC_h
+#define ALLOC_h
 
 #include <cstdlib>
 
@@ -27,6 +27,9 @@ namespace deipiSTL {
         }
 
         static inline void Deallocate(void* ptr) {
+            if (ptr == nullptr) {
+                throw "null pointer exception";
+            }
             free(ptr);
         }
 

@@ -9,13 +9,13 @@
 //allocator::size_type
 //allocator::difference_type
 
-//this head file is simple encapsulation of alloc.h
+//this head file is simple encapsulation of new and delete
 
-#ifndef ALLOCATOR_
-#define ALLOCATOR_
+#ifndef ALLOCATOR_h
+#define ALLOCATOR_h
 
 namespace DeipiSTL {
-
+    //discard
 }
 
 #endif

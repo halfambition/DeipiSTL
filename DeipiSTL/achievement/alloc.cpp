@@ -4,7 +4,7 @@
 //
 //  Created by deipi on 2023/8/2.
 //
-#include "../alloc.h"
+#include "../Alloc.h"
 #include <memory>
 //first level allocator
 namespace deipiSTL {
@@ -21,7 +21,7 @@ namespace deipiSTL {
             //if never assign bad_alloc_handler, then throw exception
             if (Bad_Alloc_Handler == 0) {
                 //exception
-                throw "never assign bad_alloc_handler";
+                throw "bad_alloc";
             }
             (*Bad_Alloc_Handler)();
             mem = malloc(size);             //try again
@@ -37,7 +37,7 @@ namespace deipiSTL {
             //if never assign bad_alloc_handler, then throw exception
             if (Bad_Alloc_Handler == 0) {
                 //exception
-                throw "never assign bad_alloc_handler";
+                throw "bad_alloc";
             }
             (*Bad_Alloc_Handler)();
             mem = realloc(ptr, size);             //try again
@@ -149,11 +149,12 @@ namespace deipiSTL{
         size_t remain = end_mem_pool - start_mem_pool;
         size_t requirement = num_blocks * size;
         size_t get_size = (requirement << 1) + Round_UP(alloc_weight >> 4);
+        
         //insufficient pool space but more than one block, then return all rest space
-        if (remain >= size) {
+        if (remain >= size && remain < requirement) {
             num_blocks = (int)remain / MIN_BYTE;
         }
-        else{
+        else if(remain < size){
             //simplify SGI STL, delete the step which join the rest pool into chain.
             //usage realloc in first_level directly
             start_mem_pool = (char*)first_level_allocator::Reallocate(start_mem_pool, get_size);
