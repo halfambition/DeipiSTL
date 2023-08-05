@@ -26,5 +26,8 @@
     <ClCompile Include="achievement\alloc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="achievement\Uninitalized.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
