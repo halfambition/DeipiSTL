@@ -139,11 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="alloc.h" />
-    <ClInclude Include="allocator.h" />
+    <ClInclude Include="Alloc.h" />
+    <ClInclude Include="Allocator.h" />
+    <ClInclude Include="Construct.h" />
+    <ClInclude Include="Iterator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="achievement\alloc.cpp" />
+    <ClCompile Include="achievement\Alloc.cpp" />
+    <ClCompile Include="achievement\Construct.cpp" />
     <ClCompile Include="achievement\Uninitalized.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,18 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="allocator.h">
+    <ClInclude Include="Allocator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="alloc.h">
+    <ClInclude Include="Alloc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Construct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="achievement\alloc.cpp">
+    <ClCompile Include="achievement\Alloc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="achievement\Uninitalized.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="achievement\Construct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
