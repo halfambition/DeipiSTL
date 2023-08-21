@@ -1,8 +1,9 @@
 //in case of conflict with other libs, the DeipiSTL's macro definition is rear underline
-#ifndef ALLOC_h
-#define ALLOC_h
+#pragma once
+#ifndef deipi_ALLOC_h
+#define deipi_ALLOC_h
 
-#include <cstdlib>
+#include <malloc.h>
 
 namespace deipiSTL {
 
@@ -18,7 +19,6 @@ namespace deipiSTL {
         //function pointer, users can assign themselves
         static void (*Bad_Alloc_Handler)();
     public:
-
         static inline void* Allocate(const size_t n) {
             void* mem = malloc(n);      //use malloc direct
             if (mem == nullptr)         //alloc fault
@@ -96,6 +96,8 @@ namespace deipiSTL {
         static void* Reallocate(void*, size_t, size_t);
         static void Deallocate(void*, size_t);
     };
+
+    typedef second_level_allocator<0> Deipi_Alloc;
 }
 
 

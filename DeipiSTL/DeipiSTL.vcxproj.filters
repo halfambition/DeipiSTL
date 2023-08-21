@@ -27,15 +27,15 @@
     <ClInclude Include="Iterator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Uninitalized.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeTraits.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="achievement\Alloc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="achievement\Uninitalized.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="achievement\Construct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
