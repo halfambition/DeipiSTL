@@ -5,8 +5,7 @@
 
 #include <malloc.h>
 
-namespace deipiSTL {
-
+namespace DeipiSTL {
     //STL SGI stand memory space allocator, devide malloc allocator to two levels
     //First level, is simple encapsulation of malloc, and join the set-new-handler to handling the fault of allocate
     class first_level_allocator {
@@ -96,8 +95,6 @@ namespace deipiSTL {
         static void* Reallocate(void*, size_t, size_t);
         static void Deallocate(void*, size_t);
     };
-
-    typedef second_level_allocator<0> Deipi_Alloc;
 }
 
 

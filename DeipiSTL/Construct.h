@@ -15,18 +15,24 @@ namespace DeipiSTL {
     //construct()
     template <typename T1, typename T2>
     inline void Construct(T1* p, const T2& value) {
-        new(p) (T1)value;       //transfer T2 to T1
+        if (p == nullptr)
+            throw "nullptr exception";
+        new(p) T1(value);       //transfer T2 to T1, call T1's constructor
     }
 
     //destroy()
     template <typename T>
     inline void Destroy(T* p) {     //destroy one obj
+        if (p == nullptr)
+            throw "nullptr exception";
         p->~T();
     }
 
     //destroy()
     template <typename ForwardIterator>
     inline void Destroy(ForwardIterator* first, ForwardIterator* last) {     //destroy one obj
+        if (first == nullptr || last == nullptr)
+            throw "nullptr exception";
         __destroy(first, last);
     }
     namespace {
@@ -42,12 +48,11 @@ namespace DeipiSTL {
         //if value_type contains trivial non-destructor
         template <typename ForwardIterator>
         inline void __destroy_aux(ForwardIterator* first, ForwardIterator* last, __false_type) {     //destroy one obj
-            for (; fast < last; ++first)
-                Destroy(*first);
+            for (; first < last; ++first)
+                DeipiSTL::Destroy(*first);
             //'&' is get address symbol, not reference
             //first is iterator not obj
             //so '&*first' is get the address of object which iterator is pointing
-
         }
 
         //else if value_type contains trivial destructor

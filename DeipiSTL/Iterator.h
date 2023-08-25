@@ -24,13 +24,13 @@ namespace DeipiSTL {
 namespace DeipiSTL {
     //Base Iterator, any iterator user-defined should inherit this class
     //user-defined only need Categpry and value_type, Distance Pointer and Reference is default
-    template <typename Categpry,
-        typename T,
-        typename Distance = ptrdiff_t,
-        typename Pointer = T*,
-        typename Reference = T&>
+    template<typename Category,
+             typename T,
+             typename Distance = ptrdiff_t,
+             typename Pointer = T*,
+             typename Reference = T&>
     struct iterator {
-        typedef typename Categpry       iterator_category;
+        typedef typename Category       iterator_category;
         typedef typename T              value_type;         //object Iterator point to
         typedef typename Distance       difference_type;    //the distence between two Iterator
         typedef typename Pointer        pointer;            //A pointer of value_type
@@ -159,16 +159,14 @@ namespace DeipiSTL {
         //anonymous
         template <typename Iterator,
                   typename Distance>
-        inline void __advance(Iterator& i, Distance n,
-                              input_iterator_tag)//this parameter only use to distinguish the override
+        inline void __advance(Iterator& i, Distance n, input_iterator_tag)//this parameter only use to distinguish the override
         {
             while (n--) ++i;
         }
 
         template <typename Iterator,
                   typename Distance>
-        inline void __advance(Iterator& i, Distance n,
-                              bidirectional_iterator_tag)//this parameter only use to distinguish the override
+        inline void __advance(Iterator& i, Distance n, bidirectional_iterator_tag)//this parameter only use to distinguish the override
         {
             if (n >= 0)
                 while (n--) ++i;
@@ -178,8 +176,7 @@ namespace DeipiSTL {
 
         template <typename Iterator,
                   typename Distance>
-        inline void __advance(Iterator& i, Distance n,
-                              random_access_iterator_tag)//this parameter only use to distinguish the override
+        inline void __advance(Iterator& i, Distance n, random_access_iterator_tag)//this parameter only use to distinguish the override
         {
             i += n;
         }
@@ -199,7 +196,7 @@ namespace DeipiSTL {
         template <typename Iterator>
         inline typename iterator_traits<Iterator>::difference_type
         __distance(Iterator first, Iterator last, input_iterator_tag) {
-            iterator_traits<Iterator>::difference_type n = 0;
+            typename iterator_traits<Iterator>::difference_type n = 0;
             while (first != last) {
                 ++first;
                 ++n;

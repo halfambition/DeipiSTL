@@ -1,5 +1,5 @@
 //
-//  alloc.cpp
+//  Alloc.cpp
 //  DeipiSTL
 //
 //  Created by deipi on 2023/8/2.
@@ -7,7 +7,7 @@
 #include "../Alloc.h"
 #include <memory>
 //first level allocator
-namespace deipiSTL {
+namespace DeipiSTL {
 
     //default bad_alloc_handler
     void (*first_level_allocator::Bad_Alloc_Handler)() = 0;
@@ -48,7 +48,7 @@ namespace deipiSTL {
 }
 
 //second level allocator
-namespace deipiSTL{
+namespace DeipiSTL{
     
     //class initialization
     template<bool threads>
@@ -84,12 +84,8 @@ namespace deipiSTL{
     //Free
     template<bool threads>
     void second_level_allocator<threads>::Deallocate(void* ptr, size_t n){
-        if (n > MAX_BYTE)                          //more than 128, use first level deallocate
-            return first_level_allocator::Deallocate(ptr);
-        
-        mem_block* block = ptr;
-        block->next_block = mem_block_chain[Chain_Index(n)];
-        mem_block_chain[Chain_Index(n)] = (mem_block*)ptr;
+        //if memory ptr pointint to is not multiples of 8, it will pollute mem pool
+        return first_level_allocator::Deallocate(ptr);
     }
     
     //Reallocate
@@ -99,7 +95,7 @@ namespace deipiSTL{
         if (old_size > MAX_BYTE && new_size > MAX_BYTE) {
             return first_level_allocator::Reallocate(ptr, new_size);
         }
-        
+
         if (old_size == new_size) {
             return ptr;
         }
