@@ -144,11 +144,13 @@
     <ClInclude Include="Allocator.h" />
     <ClInclude Include="Construct.h" />
     <ClInclude Include="Iterator.h" />
+    <ClInclude Include="String.h" />
     <ClInclude Include="TypeTraits.h" />
     <ClInclude Include="Uninitalized.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="achievement\Alloc.cpp" />
+    <ClCompile Include="achievement\String.cpp" />
     <ClCompile Include="achievement\Vector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Vector.h" />

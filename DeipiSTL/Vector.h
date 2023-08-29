@@ -57,11 +57,11 @@ namespace DeipiSTL {
 		template <typename InputIterator>
 		vector(InputIterator first, InputIterator last);
 		//copy constructor
-		vector(const vector& vec) {
+		vector(const vector& vec) :start(nullptr), finish(nullptr), end_of_storage(nullptr) {
 			allocate_and_copy(vec);
 		}
 		//move constructor
-		vector(vector&& vec) {
+		vector(vector&& vec) :start(nullptr), finish(nullptr), end_of_storage(nullptr) {
 			allocate_and_move(vec);
 		}
 		//destructor
@@ -91,6 +91,8 @@ namespace DeipiSTL {
 			return finish;
 		}
 		T& at(const size_type pos) {
+			if (start + pos >= finish)
+				throw "out of range";
 			return *(start + pos);
 		}
 		T& operator[](const size_type pos) {
@@ -105,7 +107,6 @@ namespace DeipiSTL {
 		T* data() {
 			return start;
 		}
-
 	public:
 		//insert or delete element
 		void push_back(const T& val);
@@ -138,7 +139,7 @@ namespace DeipiSTL {
 		void reserve(size_type n);
 		void resize(size_type new_size);
 		void resize(size_type new_size, const T& val);
-		iterator shrink_to_fit();
+		void shrink_to_fit();
 	};
 }
 

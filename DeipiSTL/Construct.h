@@ -23,16 +23,12 @@ namespace DeipiSTL {
     //destroy()
     template <typename T>
     inline void Destroy(T* p) {     //destroy one obj
-        if (p == nullptr)
-            throw "nullptr exception";
         p->~T();
     }
 
     //destroy()
     template <typename ForwardIterator>
     inline void Destroy(ForwardIterator* first, ForwardIterator* last) {     //destroy one obj
-        if (first == nullptr || last == nullptr)
-            throw "nullptr exception";
         __destroy(first, last);
     }
     namespace {

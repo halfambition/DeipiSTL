@@ -26,9 +26,7 @@ namespace DeipiSTL {
         }
 
         static inline void Deallocate(void* ptr) {
-            if (ptr == nullptr) {
-                throw "null pointer exception";
-            }
+            //free nullptr is safe
             free(ptr);
         }
 

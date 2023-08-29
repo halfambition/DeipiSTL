@@ -173,10 +173,14 @@ namespace DeipiSTL {
 		}
 	}
 	inline char* Copy_backward(const char* first, const char* last, char* output_rear) {
-		return Copy(first, last, output_rear);
+		size_t n = (last - first);
+		memcpy(output_rear, first, last - first);
+		return output_rear;
 	}
 	inline wchar_t* Copy_backward(const wchar_t* first, const wchar_t* last, wchar_t* output_rear) {
-		return Copy(first, last, output_rear);
+		size_t n = (last - first);
+		memcpy(output_rear, first, sizeof(wchar_t) * (last - first));
+		return output_rear;
 	}
 	template <typename InputIterator, typename OutputIterator>
 	inline OutputIterator Copy_backward(InputIterator first, InputIterator last, OutputIterator output_rear) {

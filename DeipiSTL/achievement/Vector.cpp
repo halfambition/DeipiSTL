@@ -93,7 +93,7 @@ namespace DeipiSTL {
 	}
 	template <typename T, typename Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert_aux(iterator position, size_type insert_size) {
-		DeipiSTL::Uninitialized_Fill_N(finish, finish + insert_size + insert_size, T());
+		DeipiSTL::Uninitialized_Fill_N(finish, finish + insert_size, T());
 		if (position < finish)
 			DeipiSTL::Copy_backward(position, finish, finish + insert_size);
 		finish = finish + insert_size;
@@ -233,13 +233,13 @@ namespace DeipiSTL {
 		else if (new_size > size() && new_size <= capacity()) {
 			finish = DeipiSTL::Uninitialized_Fill_N(finish, new_size - size(), val);
 		}
-		else if (new_size > capacity) {
+		else if (new_size > capacity()) {
 			reserve(new_size);
 			finish = DeipiSTL::Uninitialized_Fill_N(finish, new_size - size(), val);
 		}
 	}
 	template <typename T, typename Alloc>
-	typename vector<T, Alloc>::iterator vector<T, Alloc>::shrink_to_fit() {
+	void vector<T, Alloc>::shrink_to_fit() {
 		//try not to give tiny space back to memory
 		//so decide to reallocate
 		//O(n)
