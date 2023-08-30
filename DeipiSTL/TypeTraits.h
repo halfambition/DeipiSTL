@@ -11,8 +11,12 @@
 
 namespace DeipiSTL {
 	//same with iterator tag
-	struct __true_type{ };
-	struct __false_type { };
+	struct __true_type{
+		static constexpr bool value = true;
+	};
+	struct __false_type {
+		static constexpr bool value = false;
+	};
 
 	template <typename type>
 	struct __type_traits {
@@ -203,6 +207,80 @@ namespace DeipiSTL {
 		typedef __true_type		has_trival_destructor;
 		typedef __true_type		is_POD_type;
 	};
+
+	/*
+	if T& and T&& exception not exist, when call remove_reference<int&> or remove_reference<int&&>,
+	T = int&, remove_reference::type is int&, removing ref dose not work.
+	*/
+	template <typename T>
+	struct remove_reference {
+		typedef T type;
+	};
+	template <typename T>
+	struct remove_reference<T&> {
+		typedef T type;
+	};
+	template <typename T>
+	struct remove_reference<T&&> {
+		typedef T type;
+	};
+
+	template<class T> struct remove_cv { 
+		typedef T type; 
+	};
+	template<class T> struct remove_cv<const T> { 
+		typedef T type; 
+	};
+	template<class T> struct remove_cv<volatile T> { 
+		typedef T type;
+	};
+	template<class T> struct remove_cv<const volatile T> {
+		typedef T type;
+	};
+
+	template<class T> struct remove_const {
+		typedef T type;
+	};
+	template<class T> struct remove_const<const T> {
+		typedef T type;
+	};
+
+	template<class T> struct remove_volatile {
+		typedef T type;
+	};
+	template<class T> struct remove_volatile<volatile T> {
+		typedef T type;
+	};
+
+	//use the GCC code
+	namespace {
+		template <typename T>
+		struct is_pointer_helper : public __false_type { };
+
+		template <typename T>
+		struct is_pointer_helper<T*> : public __true_type { };
+	}
+
+	template <typename T>
+	struct is_pointer : public is_pointer_helper<typename remove_cv<T>::type> { };
+
+	template <typename T>
+	struct is_lvalue_referenece : public __false_type { };
+
+	template <typename T>
+	struct is_lvalue_referenece<T&> : public __true_type { };
+
+	template <typename T>
+	struct is_lvalue_referenece<T&&> : public __false_type { };
+
+	template <typename T>
+	struct is_rvalue_referenece : public __false_type { };
+
+	template <typename T>
+	struct is_rvalue_referenece<T&> : public __false_type { };
+
+	template <typename T>
+	struct is_rvalue_referenece<T&&> : public __true_type { };
 }
 
 #endif /* deipi_TYPETRAITS_h */

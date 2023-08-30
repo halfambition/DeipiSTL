@@ -85,12 +85,15 @@ namespace DeipiSTL {
 		//operator overload
 		basic_string<Char, data_allocator>& operator=(const basic_string& str) {
 			allocate_and_copy(str.start, str.finish);
+			return *this;
 		}
 		basic_string<Char, data_allocator>& operator=(basic_string&& str) {
 			allocate_and_move(str.start, str.finish);
+			return *this;
 		}
 		basic_string<Char, data_allocator>& operator=(const char* str) {
 			allocate_and_copy(str, str + strlen(str));
+			return *this;
 		}
 
 	public:
@@ -168,7 +171,7 @@ namespace DeipiSTL {
 			finish = start;
 		}
 	};
-	typedef basic_string <char> string;
+	using string = basic_string<char>;
 }
 
 #endif
