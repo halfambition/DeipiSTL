@@ -249,4 +249,12 @@ namespace DeipiSTL {
 		//DeipiSTL::Destory(finish + 1, end_of_storage);
 		//end_of_storage = finish;
 	}
+
+	template <typename T, typename Alloc>
+	std::ostream operator<<(std::ostream& os, vector<T, Alloc>& vec) {
+		for (auto iter = vec.begin(); iter != vec.end(); ++iter) {
+			os << *iter << " ";
+		}
+		os << std::endl;
+	}
 }

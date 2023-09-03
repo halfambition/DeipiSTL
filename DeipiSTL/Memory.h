@@ -37,7 +37,7 @@ namespace DeipiSTL {
 		typedef T&				reference;
 		typedef const T&		const_reference;
 		typedef size_t		    size_type;
-		typedef D		delete_type;
+		typedef D				delete_type;
 		//about iterator
 	private:
 		pointer _ptr;
@@ -116,9 +116,11 @@ namespace DeipiSTL {
 			return _deleter;
 		}
 
-		void release() {
-			_deleter(_ptr);
+		pointer release() {
+			//release does not delete the poniting target
+			pointer p = _ptr;
 			_ptr = nullptr;
+			return p;
 		}
 
 		void reset(pointer new_ptr) {
@@ -170,17 +172,45 @@ namespace DeipiSTL {
 	bool operator!=(nullptr_t b, unique_ptr<T, D>& a) {
 		return a.get() != b;
 	}
+
+
 }
 
-
-
 namespace DeipiSTL {
-	template<typename T, typename Alloc = allocator<T, deipi_Alloc>>
+	template<typename T, typename D = default_delete<T>>
 	class shared_ptr {
+	public:
+		//type_traits
+		typedef T				value_type;
+		typedef T*				pointer;
+		typedef const T*		const_pointer;
+		typedef T&				reference;
+		typedef const T&		const_reference;
+		typedef size_t		    size_type;
+		typedef D				delete_type;
 
+	private:
+		pointer _ptr;
+		delete_type _deleter;
+		size_type* ref_count;
+	public:
+		//using pointer which another shared_ptr is managing to create a new shared_ptr is undefine
+		shared_ptr() : _ptr(nullptr), ref_count(nullptr){};
+		explicit shared_ptr(pointer ptr) : _ptr(ptr), ref_count(new size_type(1)){};
+		shared_ptr(pointer ptr, delete_type deleter) : _ptr(ptr), _deleter(deleter), ref_count(new size_type(1)) {};
+		shared_ptr(const shared_ptr& s_ptr);
+		shared_ptr(shared_ptr&& s_ptr);
+		
+		~shared_ptr(){}
+
+		shared_ptr<value_type, delete_type>& operator=(const shared_ptr& s_ptr) {
+
+		}
+
+		shared_ptr<value_type, delete_type>&
 	};
 
-	template<typename T, typename Alloc = allocator<T, deipi_Alloc>>
+	template<typename T>
 	class weak_ptr {
 
 	};
