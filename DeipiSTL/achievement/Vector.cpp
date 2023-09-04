@@ -164,14 +164,14 @@ namespace DeipiSTL {
 	}
 	template <typename T, typename Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator pos, const T& val) {
-		pos = insert_t(pos, 1);
+		pos = __insert(pos, 1);
 		DeipiSTL::Copy(pos, pos +1, val);
 		return pos - 1;
 	}
 
 	template <typename T, typename Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator pos, const T& val, size_type& n) {
-		pos = insert_t(pos, n);
+		pos = __insert(pos, n);
 		DeipiSTL::Fill_N(pos, n, val);
 		return pos - 1;
 	}
@@ -180,7 +180,7 @@ namespace DeipiSTL {
 	template <typename InputIterator>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator pos, InputIterator first, InputIterator last) {
 		typename iterator_traits<InputIterator>::difference_type n = Distance(first, last);
-		pos = insert_t(pos, n);
+		pos = __insert(pos, n);
 		DeipiSTL::Copy(first, last, pos);
 		return pos - 1;
 	}

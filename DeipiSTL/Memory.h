@@ -129,12 +129,7 @@ namespace DeipiSTL {
 		}
 
 		void swap(unique_ptr& new_obj) {
-			pointer temp_ptr = _ptr;
-			delete_type& temp_deleter = _deleter;
-			_ptr = new_obj.get();
-			_deleter = new_obj.get_deleter();
-			new_obj._ptr = temp_ptr;
-			new_obj._deleter = temp_deleter;
+			DeipiSTL::swap(_ptr, new_obj._ptr);
 		}
 
 	}; 
@@ -172,8 +167,6 @@ namespace DeipiSTL {
 	bool operator!=(nullptr_t b, unique_ptr<T, D>& a) {
 		return a.get() != b;
 	}
-
-
 }
 
 namespace DeipiSTL {
@@ -193,23 +186,103 @@ namespace DeipiSTL {
 		pointer _ptr;
 		delete_type _deleter;
 		size_type* ref_count;
+	private:
+		void reduce_ref_count() {
+			if (--(*ref_count) == 0) {
+				_deleter(_ptr);
+				_deleter(ref_count);
+				_ptr = nullptr;
+				ref_count = nullptr;
+			}
+		}
+		void copy_ref_count(size_type* new_ref_count) {
+			if (ref_count == nullptr)
+				ref_count = new size_type(1);
+			ref_count = new_ref_count;
+			++(*ref_count);
+		}
 	public:
 		//using pointer which another shared_ptr is managing to create a new shared_ptr is undefine
 		shared_ptr() : _ptr(nullptr), ref_count(nullptr){};
 		explicit shared_ptr(pointer ptr) : _ptr(ptr), ref_count(new size_type(1)){};
 		shared_ptr(pointer ptr, delete_type deleter) : _ptr(ptr), _deleter(deleter), ref_count(new size_type(1)) {};
-		shared_ptr(const shared_ptr& s_ptr);
-		shared_ptr(shared_ptr&& s_ptr);
-		
-		~shared_ptr(){}
-
+		shared_ptr(const shared_ptr& s_ptr) {
+			_ptr = s_ptr;
+			copy_ref_count(s_ptr.use_count);
+		}
+		~shared_ptr(){
+			reduce_ref_count();
+		}
 		shared_ptr<value_type, delete_type>& operator=(const shared_ptr& s_ptr) {
+			if (this != &s_ptr) {
+				_ptr = s_ptr.get();
+				copy_ref_count(s_ptr.use_count);
+			}
+			return *this;
+		}
+		//delete function
+		shared_ptr(shared_ptr&& s_ptr) = delete;
+		shared_ptr<value_type, delete_type>& operator=(const shared_ptr&& s_ptr) = delete;
 
+		//modifier
+		void reset(pointer new_ptr) {
+			reduce_ref_count();
+			_ptr = new_ptr;
+			*ref_count = new size_type(1);
+		}
+		void swap(shared_ptr& s_ptr) {
+			DeipiSTL::swap(_ptr, s_ptr._ptr);
 		}
 
-		shared_ptr<value_type, delete_type>&
+		//observer
+		pointer get() {
+			return _ptr;
+		}
+		const_pointer get()const {
+			return _ptr;
+		}
+
+		reference operator*() {
+			return *_ptr;
+		}
+		const_reference operator*()const {
+			return *_ptr;
+		}
+
+		pointer operator->() {
+			return _ptr;
+		}
+		const_pointer operator->()const {
+			return _ptr;
+		}
+
+		reference operator[](const size_type n) {
+			return *(_ptr + n);
+		}
+		const_reference operator[](const size_type n)const{
+			return *(_ptr + n);
+		}
+
+		size_type use_count()const {
+			return *ref_count;
+		}
+
+		bool unique()const {
+			return *ref_count == 1;
+		}
+		bool operator bool()const {
+			return _ptr != nullptr;
+		}
+
+		bool onwer_befor(const shared_ptr& other)const {
+			return _ptr < other._ptr;
+		}
 	};
 
+
+}
+
+namespace DeipiSTL {
 	template<typename T>
 	class weak_ptr {
 
