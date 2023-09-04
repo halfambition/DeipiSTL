@@ -141,7 +141,6 @@ namespace DeipiSTL {
 		void resize(size_type new_size);
 		void resize(size_type new_size, const T& val);
 		void shrink_to_fit();
-		friend std::ostream operator<<(std::ostream& ost, vector);
 	};
 }
 

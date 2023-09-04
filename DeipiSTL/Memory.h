@@ -10,8 +10,10 @@
 
 #include "Allocator.h"
 #include "Construct.h"
+#include "Move.h"
 
 namespace DeipiSTL {
+	//use tiny stl code
 	template<typename T>
 	struct default_delete {
 		void operator()(T* ptr) {
@@ -60,7 +62,7 @@ namespace DeipiSTL {
 			_ptr = new_u_ptr._ptr;
 			_deleter = new_u_ptr._deleter;
 		}
-		unique_ptr<value_type, delete_type>& operator=(unique_ptr&& new_u_ptr) {
+		explicit unique_ptr<value_type, delete_type>& operator=(unique_ptr&& new_u_ptr) {
 			if(&new_u_ptr != this){
 				deleter(_ptr);
 				~_deleter();
@@ -197,7 +199,7 @@ namespace DeipiSTL {
 		}
 		void copy_ref_count(size_type* new_ref_count) {
 			if (ref_count == nullptr)
-				ref_count = new size_type(1);
+				ref_count = new size_type(0);
 			ref_count = new_ref_count;
 			++(*ref_count);
 		}
@@ -213,16 +215,34 @@ namespace DeipiSTL {
 		~shared_ptr(){
 			reduce_ref_count();
 		}
-		shared_ptr<value_type, delete_type>& operator=(const shared_ptr& s_ptr) {
+		explicit shared_ptr<value_type, delete_type>& operator=(const shared_ptr& s_ptr) {
 			if (this != &s_ptr) {
+				reduce_ref_count();
 				_ptr = s_ptr.get();
 				copy_ref_count(s_ptr.use_count);
 			}
 			return *this;
 		}
-		//delete function
-		shared_ptr(shared_ptr&& s_ptr) = delete;
-		shared_ptr<value_type, delete_type>& operator=(const shared_ptr&& s_ptr) = delete;
+
+		shared_ptr(shared_ptr&& s_ptr) {
+			this->_ptr = s_ptr._ptr;
+			this->_deleter = s_ptr._deleter;
+			this->ref_count = s_ptr.ref_count;
+			s_ptr._ptr = nullptr;
+			s_ptr.ref_count = nullptr;
+		}
+		shared_ptr<value_type, delete_type>& operator=(const shared_ptr&& s_ptr) {
+			if (this == &s_ptr)
+				return *this;
+			if (this->_ptr != nullptr) {
+				reduce_ref_count();
+			}
+			this->_ptr = s_ptr._ptr;
+			this->_deleter = s_ptr._deleter;
+			this->ref_count = s_ptr.ref_count;
+			s_ptr._ptr = nullptr;
+			s_ptr.ref_count = nullptr;
+		}
 
 		//modifier
 		void reset(pointer new_ptr) {
@@ -256,12 +276,12 @@ namespace DeipiSTL {
 			return _ptr;
 		}
 
-		reference operator[](const size_type n) {
+		/*reference operator[](const size_type n) {
 			return *(_ptr + n);
 		}
 		const_reference operator[](const size_type n)const{
 			return *(_ptr + n);
-		}
+		}*/
 
 		size_type use_count()const {
 			return *ref_count;
@@ -278,7 +298,40 @@ namespace DeipiSTL {
 			return _ptr < other._ptr;
 		}
 	};
-
+	template <typename T, typename... Args>
+	shared_ptr<T> make_shared(Args&&...args) {
+		//make_shared<T>(new T(...))
+		return shared_ptr<T>(new T(DeipiSTL::forward<Args>(args)...));
+	}
+	template <typename T, typename Alloc, typename... Args>
+	shared_ptr<T> allocate_shared(Args&&...args) {
+		//allocate_shared<T, Alloc>(new T(...))
+		T* ptr = Alloc::allocate<T>();
+		return shared_ptr<T>(Construct(ptr, DeipiSTL::forward<Args>(args)...));
+	}
+	//use cpp reference edition
+	template< class T, class U >
+	shared_ptr<T> static_pointer_cast(const shared_ptr<U>& r) noexcept
+	{
+		auto p = static_cast<typename std::shared_ptr<T>::element_type*>(r.get());
+		return std::shared_ptr<T>(r, p);
+	}
+	template< class T, class U >
+	shared_ptr<T> dynamic_pointer_cast(const shared_ptr<U>& r) noexcept
+	{
+		if (auto p = dynamic_cast<typename std::shared_ptr<T>::element_type*>(r.get())) {
+			return std::shared_ptr<T>(r, p);
+		}
+		else {
+			return std::shared_ptr<T>();
+		}
+	}
+	template< class T, class U >
+	shared_ptr<T> const_pointer_cast(const shared_ptr<U>& r) noexcept
+	{
+		auto p = const_cast<typename std::shared_ptr<T>::element_type*>(r.get());
+		return std::shared_ptr<T>(r, p);
+	}
 
 }
 

@@ -22,7 +22,7 @@ namespace DeipiSTL {
 	}
 	template <typename T>
 	constexpr T&& forward(typename remove_reference<T>::type&& t) {
-		static_assert(!is_lvalue_referenece<T>::value, "template argument substituting T is an lvaule reference type")
+		static_assert(!is_lvalue_referenece<T>::value, "template argument substituting T is an lvaule reference type");
 		return static_cast<T&&>(t);
 	}
 }
