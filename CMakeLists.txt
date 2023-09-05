@@ -18,4 +18,5 @@ add_executable(DeipiSTL
         DeipiSTL/String.h
         DeipiSTL/TypeTraits.h
         DeipiSTL/Uninitalized.h
-        DeipiSTL/Vector.h)
+        DeipiSTL/Vector.h
+        DeipiSTL/List.h)
