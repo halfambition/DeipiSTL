@@ -39,7 +39,7 @@ namespace DeipiSTL {
 
 	protected:
 		//inner aux
-		void allocate_and_fill(const Char c, size_type n);
+		void allocate_and_fill(Char c, size_type n);
 		template <typename InputIterator>
 		void allocate_and_copy(InputIterator first, InputIterator last);
 		void allocate_and_move(basic_string& str);
@@ -76,7 +76,7 @@ namespace DeipiSTL {
 			allocate_and_copy(str.start, str.finish);
 		}
 		//move constructor
-		basic_string(basic_string&& str) : start(nullptr), finish(nullptr), end_of_storage(nullptr) {
+		basic_string(basic_string&& str)  noexcept : start(nullptr), finish(nullptr), end_of_storage(nullptr) {
 			allocate_and_move(str.start, str.finish);
 		}
 		//destructor
@@ -87,7 +87,7 @@ namespace DeipiSTL {
 			allocate_and_copy(str.start, str.finish);
 			return *this;
 		}
-		basic_string<Char, data_allocator>& operator=(basic_string&& str) {
+		basic_string<Char, data_allocator>& operator=(basic_string&& str)  noexcept {
 			allocate_and_move(str.start, str.finish);
 			return *this;
 		}
@@ -97,7 +97,7 @@ namespace DeipiSTL {
 		}
 
 	public:
-		//all of bellow function bodies are in Vector.cpp
+		//all bellow function bodies are in Vector.cpp
 		//return element or iterator
 		iterator begin() {
 			return start;
@@ -106,8 +106,8 @@ namespace DeipiSTL {
 			return finish;
 		}
 
-		iterator rbegin();
-		iterator rend();
+//		iterator rbegin();
+//		iterator rend();
 
 		const_iterator cbegin() const {
 			return start;
@@ -160,12 +160,12 @@ namespace DeipiSTL {
 		void shrink_to_fit();
 
 		//insert or delete element
-		basic_string<Char, data_allocator>& insert(iterator pos, const_reference c);
-		basic_string<Char, data_allocator>& insert(iterator pos, const_reference c, size_type n);
-		template <typename InputIterator>
-		basic_string<Char, data_allocator>& insert(iterator pos, InputIterator first, InputIterator last);
-		basic_string<Char, data_allocator>& erase(iterator pos);
-		basic_string<Char, data_allocator>& erase(iterator first, iterator second);
+//		basic_string<Char, data_allocator>& insert(iterator pos, const_reference c);
+//		basic_string<Char, data_allocator>& insert(iterator pos, const_reference c, size_type n);
+//		template <typename InputIterator>
+//		basic_string<Char, data_allocator>& insert(iterator pos, InputIterator first, InputIterator last);
+//		basic_string<Char, data_allocator>& erase(iterator pos);
+//		basic_string<Char, data_allocator>& erase(iterator first, iterator second);
 		void clear() {
 			DeipiSTL::Destroy(start, finish);
 			finish = start;

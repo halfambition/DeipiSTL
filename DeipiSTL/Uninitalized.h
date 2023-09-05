@@ -13,12 +13,12 @@
 #include "Algorithms.h"
 
 namespace DeipiSTL {
-    //if initalize failed, object must rollback
+    //if initialize failed, objects must roll back
     //copy another object's data between first and last to ForwardIterator
     template <typename InputIterator, typename ForwardIterator>
     inline ForwardIterator Uninitialized_Copy(InputIterator first, InputIterator last, ForwardIterator output) {
         //get the type iterator pointing to, and if it is POD or NOT
-        typedef typename __type_traits<iterator_traits<output>::value_type>::is_POD_type is_POD;
+        typedef typename __type_traits<typename iterator_traits<ForwardIterator>::value_type>::is_POD_type is_POD;
         return __uninitialized_copy_aux(first, last, output, is_POD());
         //value of return is output last value;
     }
@@ -57,7 +57,7 @@ namespace DeipiSTL {
 
 
     /****************************************************************************/
-    //copy and fill object between first and last with value of T
+    //copy and fill objects between first and last with value of T
     template <typename ForwardIterator, typename T>
     inline void Uninitialized_Fill(ForwardIterator first, ForwardIterator last, const T& val) {
         //get the type iterator pointing to, and if it is POD or NOT
@@ -84,7 +84,7 @@ namespace DeipiSTL {
 
 
     /****************************************************************************/
-    //copy and fill object from first to first + n with value of T
+    //copy and fill objects from first to first + n with value of T
     template <typename ForwardIterator, typename T>
     inline ForwardIterator Uninitialized_Fill_N(ForwardIterator first, size_t n, const T& val) {
         //get the type iterator pointing to, and if it is POD or NOT

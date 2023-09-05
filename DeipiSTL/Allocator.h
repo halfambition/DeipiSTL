@@ -1,6 +1,6 @@
 #pragma once
-//this head file is simple encapsulation of Alloc
-//all external user use alloc through this interface
+//this head file is a simple encapsulation of Alloc
+//all external users use alloc through this interface
 #ifndef ALLOCATOR_h
 #define ALLOCATOR_h
 
@@ -9,10 +9,10 @@
 
 namespace DeipiSTL {
     //define default allocator
-    typedef second_level_allocator<0> deipi_Alloc;
+    typedef second_level_allocator<false> deipi_Alloc;
 
-    //briefly, this interface is allocate space through number of unit
-    template <typename T, typename Alloc>
+    //briefly, this interface is allocating space through the number of units
+    template <typename T, typename Alloc = deipi_Alloc>
     class allocator {
     public:
         typedef T			    value_type;

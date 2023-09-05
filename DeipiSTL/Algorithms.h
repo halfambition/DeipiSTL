@@ -7,8 +7,7 @@
 #pragma once
 #ifndef deipi_ALGORITHMS_h
 #define deipi_ALGORITHMS_h
-
-#include <vcruntime_string.h>
+#include <cstring>
 #include "TypeTraits.h"
 
 namespace DeipiSTL {
@@ -39,6 +38,7 @@ namespace DeipiSTL {
 	inline const T& Min(const T& a, const T& b, Compare comp) {
 		return comp(b, a) ? b : a;
 	}
+    //parody python in range
 	template <typename T, typename Tar>
 	inline bool In_Range(T& start, T& end, Tar& tar) {
 		return (tar >= start && tar <= end);
@@ -61,15 +61,15 @@ namespace DeipiSTL {
 		template <typename T>
 		struct __copy_dispatch<T*, T*> {
 			T* operator()(T* first, T* last, T* output) {
-				typedef typename __type_traits<T>::has_trival_assignment_operator t;
-				return __copy(first, last, output, t());
+				typedef typename __type_traits<T>::has_trivial_assignment_operator t;
+				return __copy_t(first, last, output, t());
 			}
 		};
 		template <typename T>
 		struct __copy_dispatch<const T*, T*> {
 			T* operator()(const T* first, const T* last, T* output) {
-				typedef typename __type_traits<T>::has_trival_assignment_operator t;
-				return __copy(first, last, output, t());
+				typedef typename __type_traits<T>::has_trivial_assignment_operator t;
+				return __copy_t(first, last, output, t());
 			}
 		};
 		//InputIterator
@@ -92,13 +92,13 @@ namespace DeipiSTL {
 		//pointer type
 		template <typename T>
 		inline T* __copy_t(const T* first, const T* last, T* output, __true_type) {
-			//do has trival assignment operator
+			//do has trivial assignment operator
 			memmove(output, first, sizeof(T) * (last - first));
 			return output + (last - first);
 		}
 		template <typename T>
 		inline T* __copy_t(const T* first, const T* last, T* output, __false_type) {
-			//not has trival assignment operator
+			//not has trivial assignment operator
 			return __copy(first, last, output, random_access_iterator_tag());
 		}
 	}
@@ -129,15 +129,15 @@ namespace DeipiSTL {
 		template <typename T>
 		struct __copy_dispatch_backward<T*, T*> {
 			T* operator()(T* first, T* last, T* output_rear) {
-				typedef typename __type_traits<T>::has_trival_assignment_operator t;
-				return __copy_backward(first, last, output_rear, t());
+				typedef typename __type_traits<T>::has_trivial_assignment_operator t;
+				return __copy_t_backward(first, last, output_rear, t());
 			}
 		};
 		template <typename T>
 		struct __copy_dispatch_backward<const T*, T*> {
 			T* operator()(const T* first, const T* last, T* output_rear) {
-				typedef typename __type_traits<T>::has_trival_assignment_operator t;
-				return __copy_backward(first, last, output_rear, t());
+				typedef typename __type_traits<T>::has_triial_assignment_operator t;
+				return __copy_t_backward(first, last, output_rear, t());
 			}
 		};
 		//InputIterator
@@ -163,12 +163,12 @@ namespace DeipiSTL {
 		//pointer type
 		template <typename T>
 		inline T* __copy_t_backward(const T* first, const T* last, T* output_rear, __true_type) {
-			//do has trival assignment operator
-			return __copy_t(first, last, output_rear, __true_type);
+			//do has trivial assignment operator
+			return __copy_t(first, last, output_rear, __true_type());
 		}
 		template <typename T>
 		inline T* __copy_t_backward(const T* first, const T* last, T* output_rear, __false_type) {
-			//not has trival assignment operator
+			//not has trivial assignment operator
 			return __copy_backward(first, last, output_rear, random_access_iterator_tag());
 		}
 	}

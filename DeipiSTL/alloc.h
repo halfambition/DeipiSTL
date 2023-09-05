@@ -1,19 +1,19 @@
-//in case of conflict with other libs, the DeipiSTL's macro definition is rear underline
+//in the case of conflict with other libs, the DeipiSTL's macro definition is rear underline
 #pragma once
 #ifndef deipi_ALLOC_h
 #define deipi_ALLOC_h
 
-#include <malloc.h>
+#include <stdlib.h>
 
 namespace DeipiSTL {
-    //STL SGI stand memory space allocator, devide malloc allocator to two levels
-    //First level, is simple encapsulation of malloc, and join the set-new-handler to handling the fault of allocate
+    //STL SGI stand memory space allocator, divide malloc allocator to two levels
+    //First level is simple encapsulation of malloc and join the set-new-handler to handling the fault of allocating
     class first_level_allocator {
     private:
         //out of memory handler
-        static void* Bad_Allocate(const size_t);
+        static void* Bad_Allocate(size_t size);
 
-        static void* Bad_Reallocate(void*, const size_t);
+        static void* Bad_Reallocate(void*, size_t size);
 
         //function pointer, users can assign themselves
         static void (*Bad_Alloc_Handler)();
@@ -31,7 +31,7 @@ namespace DeipiSTL {
         }
 
         static inline void* Reallocate(void* ptr, const size_t n) {
-            void* mem = realloc(ptr, n);        //use relloc direct
+            void* mem = realloc(ptr, n);        //use reallocate direct
             if (mem == nullptr)
                 mem = Bad_Reallocate(ptr, n);   //alloc fault
             return mem;
@@ -47,7 +47,7 @@ namespace DeipiSTL {
 
 
 
-    //Second level, maintainung a chain list named memory_pool which is the solution of memory request less than 128B
+    //Second level, maintaining a chain list named memory_pool which is the solution of memory request less than 128B
     //If memory request more than 128B, then use first level
     template <bool threads>
     class second_level_allocator {
@@ -63,7 +63,7 @@ namespace DeipiSTL {
         
     private:
         static inline size_t Round_UP(size_t bytes) {
-            return ((bytes + MIN_BYTE - 1) & ~(MIN_BYTE - 1));      //memory every allocted will round into 8
+            return ((bytes + MIN_BYTE - 1) & ~(MIN_BYTE - 1));      //memory every allocated will round into 8
         }
         
         //unit block in free-list, sizeof mem_block is equal to a pointer <= 8. client_data is VLA
@@ -82,7 +82,7 @@ namespace DeipiSTL {
         }
         
         //return obj which size is n.
-        //might join other blocks into chain
+        //might join other blocks into chains
         static void* Refill(size_t);
         //alloc a large memory block, which size is num_objs * n
         //num_objs is not a fixed value

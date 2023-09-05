@@ -45,7 +45,7 @@ namespace DeipiSTL {
 	}
 	template <typename Char, typename Alloc>
 	typename basic_string<Char, Alloc>::iterator basic_string<Char, Alloc>::realloc_aux(size_type new_capacity) {
-		//expand or reduce capacity, then copy all orderly
+		//expand or reduce capacity, then copy all orderlies
 		size_type len = size();
 		if (new_capacity < size())
 			len = new_capacity;

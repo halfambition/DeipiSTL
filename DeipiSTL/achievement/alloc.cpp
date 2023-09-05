@@ -4,13 +4,13 @@
 //
 //  Created by deipi on 2023/8/2.
 //
-#include "../Alloc.h"
+#include "../alloc.h"
 #include <memory>
 //first level allocator
 namespace DeipiSTL {
 
     //default bad_alloc_handler
-    void (*first_level_allocator::Bad_Alloc_Handler)() = 0;
+    void (*first_level_allocator::Bad_Alloc_Handler)() = nullptr;
 
 
     //out of memory allocator function body
@@ -19,7 +19,7 @@ namespace DeipiSTL {
         //call bug handler
         do{
             //if never assign bad_alloc_handler, then throw exception
-            if (Bad_Alloc_Handler == 0) {
+            if (Bad_Alloc_Handler == nullptr) {
                 //exception
                 throw "bad_alloc";
             }
@@ -52,9 +52,9 @@ namespace DeipiSTL{
     
     //class initialization
     template<bool threads>
-    char* second_level_allocator<threads>::start_mem_pool = 0;
+    char* second_level_allocator<threads>::start_mem_pool = nullptr;
     template<bool threads>
-    char* second_level_allocator<threads>::end_mem_pool = 0;
+    char* second_level_allocator<threads>::end_mem_pool = nullptr;
 
     template<bool threads>
     size_t second_level_allocator<threads>::alloc_weight = 0;
@@ -67,7 +67,7 @@ namespace DeipiSTL{
     //Allocate
     template<bool threads>
     void* second_level_allocator<threads>::Allocate(size_t n){
-        if (n > MAX_BYTE)                          //more than 128, use first level alloctor
+        if (n > MAX_BYTE)                          //more than 128, use first level allocator
             return first_level_allocator::Allocate(n);
         
         mem_block* res = mem_block_chain[Chain_Index(n)];
@@ -76,7 +76,7 @@ namespace DeipiSTL{
             res = Refill(Round_UP(n));
             return (void*)res;
         }
-        //listnode operation
+        //list node operation
         mem_block_chain[Chain_Index(n)] = res->next_block;
         return (void*)res;
     }
@@ -84,7 +84,7 @@ namespace DeipiSTL{
     //Free
     template<bool threads>
     void second_level_allocator<threads>::Deallocate(void* ptr, size_t n){
-        //if memory ptr pointint to is not multiples of 8, it will pollute mem pool
+        //if memory ptr pointing to is not multiples of 8, it will pollute mem pool
         return first_level_allocator::Deallocate(ptr);
     }
     
@@ -124,7 +124,7 @@ namespace DeipiSTL{
         
         //clip the chunk into chain table
         void* res = (void*)chunk;
-        mem_block* next = (mem_block*)(chunk + roundup_size);
+        auto* next = (mem_block*)(chunk + roundup_size);
         mem_block_chain[Chain_Index(roundup_size)] = next;
         
         for(int i = 1; i < n_blocks - 1; ++i){
@@ -152,7 +152,7 @@ namespace DeipiSTL{
         }
         else if(remain < size){
             //simplify SGI STL, delete the step which join the rest pool into chain.
-            //usage realloc in first_level directly
+            //usage reallocate in first_level directly
             start_mem_pool = (char*)first_level_allocator::Reallocate(start_mem_pool, get_size);
             end_mem_pool = start_mem_pool + get_size;
         }

@@ -73,7 +73,7 @@ namespace DeipiSTL {
 		vector<T, data_allocator>& operator=(vector&& vec);
 
 	public:
-		//all of bellow function bodies are in Vector.cpp
+		//all bellow function bodies are in Vector.cpp
 		//return element or iterator
 		iterator begin() {
 			return start;

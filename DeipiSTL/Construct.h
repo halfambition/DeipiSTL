@@ -10,14 +10,16 @@
 
 #include <new>    //placement new
 #include "TypeTraits.h"
+#include "Move.h"
 
 namespace DeipiSTL {
     //construct()
+    //change use universal reference
     template <typename T1, typename T2>
-    inline void Construct(T1* p, const T2& value) {
+    inline void Construct(T1* p, T2&& t2) {
         if (p == nullptr)
             throw "nullptr exception";
-        new(p) T1(value);       //transfer T2 to T1, call T1's constructor
+        new(p) T1(forward<remove_cv<T2>>(t2));       //transfer T2 to T1, call T1's constructor
     }
 
     //destroy()
@@ -34,11 +36,11 @@ namespace DeipiSTL {
     namespace {
         //judge if value_type contains trivial destructor
         /*what's trivial destructor, it's a type traitor
-            judje if call destructor based on object type*/
+            judge if call destructor based on an object type*/
         template <typename ForwardIterator, typename T>
         inline void __destroy(ForwardIterator* first, ForwardIterator* last, T*) {     //destroy one obj
-            typedef typename __type_traits<T>::has_trivial_destructor trival_destructor;
-            __destroy_aux(first, last, trival_destructor());
+            typedef typename __type_traits<T>::has_trivial_destructor trivial_destructor;
+            __destroy_aux(first, last, trivial_destructor());
         }
 
         //if value_type contains trivial non-destructor
@@ -58,9 +60,9 @@ namespace DeipiSTL {
     //end anonymous namespace
     }
 
-    //specialization destory for char and wchar_t
-    inline void Destory(char*, char*){ }
-    inline void Destory(wchar_t*, wchar_t*) { }
+    //specialization destroys for char and wchar_t
+    inline void Destroy(char*, char*){ }
+    inline void Destroy(wchar_t*, wchar_t*) { }
 }
 
 #endif /* deipi_CONSTRUCT_h */
