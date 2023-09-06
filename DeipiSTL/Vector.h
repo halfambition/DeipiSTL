@@ -29,7 +29,7 @@ namespace DeipiSTL {
 		typedef const T*		const_iterator;
 
 	protected:
-		typedef Alloc data_allocator;	//default space allocator
+		typedef Alloc           data_allocator;	//default space allocator
 		iterator start;				//head of usage
 		iterator finish;			//end of usage
 		iterator end_of_storage;	//end of all space

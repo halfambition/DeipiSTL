@@ -19,4 +19,5 @@ add_executable(DeipiSTL
         DeipiSTL/TypeTraits.h
         DeipiSTL/Uninitalized.h
         DeipiSTL/Vector.h
-        DeipiSTL/List.h)
+        DeipiSTL/List.h
+        DeipiSTL/ReverseIterator.h)
