@@ -8,6 +8,7 @@
 #include "Allocator.h"
 #include "Construct.h"
 #include "Iterator.h"
+#include "ReverseIterator.h"
 
 namespace DeipiSTL{
     namespace {
@@ -109,7 +110,10 @@ namespace DeipiSTL{
         size_type _size;
         //list is a bidirectional list table，_node is head node, also is end node.
     public:
-        list() : _node(nullptr), _size(0){ }
+        list() : _size(0){
+            _node->_prev = _node;
+            _node->_next = _node;
+        }
         list(const list& l) = delete;
         list(list&& l) = delete;
         list<T, Alloc>& operator=(const list& l) = delete;
@@ -117,6 +121,9 @@ namespace DeipiSTL{
             _node = l._node;
             _size = l._size;
             return *this;
+        }
+        ~list(){
+            clear();
         }
     private:
         node_ptr alloc_node(){
@@ -144,16 +151,8 @@ namespace DeipiSTL{
             ptr->_next->_prev = ptr->_prev;
             destroy_node(ptr);
         }
-        void insert_t_first(node_ptr ptr){
-            _size = 1;
-            _node = ptr;
-            _node->_next = _node;
-            _node->_prev = _node;
-       }
         void insert_back_aux(node_ptr p, const value_type& val){
             node_ptr temp = create_node(val);
-            if (_node == nullptr)
-                return insert_t_first(temp);
             temp->_next = p->_next;
             temp->_prev = p;
             p->_next = temp;
@@ -173,19 +172,23 @@ namespace DeipiSTL{
         const_iterator cend() const {
             return (iterator)_node;
         }
+        reverse_iterator<iterator> rbegin() const {
+            return reverse_iterator<iterator>(end());
+        }
+        reverse_iterator<iterator> rend() const {
+            return reverse_iterator<iterator>(begin());
+        }
         size_type size() const {
             return _size;
         }
         void push_back(const value_type& val){
-            push_front(val);
-            _node = _node->_next;
+            insert_back_aux(_node->_prev, val);
         }
         void push_front(const value_type& val){
             insert_back_aux(_node, val);
         }
         void pop_back(){
-            _node = _node->_prev;
-            erase_aux(_node->_next);
+            erase_aux(_node->_prev);
         }
         void pop_front(){
             erase_aux(_node->_next);
@@ -194,9 +197,13 @@ namespace DeipiSTL{
             iter._node != nullptr;
             insert_back_aux(iter._node, val);
         }
+        void erase(iterator iter){
+            erase_aux(iter);
+        }
         void clear() {
             Destroy(begin(), end());
             data_allocator::Deallocate(_node->_next, _size);
+            _size = 0;
         }
         template <typename X, typename A>
          friend list<X, A> shallow_copy(const list<X, A>& l);
@@ -214,21 +221,24 @@ namespace DeipiSTL{
         for(auto it = l.cbegin(); it!=l.cend(); ++it){
             new_l.push_back(it._node->_data);
         }
-        new_l.push_back(l.cend()._node->_data);
         return new_l;
     }
     template <typename T, typename Alloc>
-    list<T, Alloc> splice(const list<T, Alloc>& l1, const list<T, Alloc>& l2){
+    list<T, Alloc>& splice(const list<T, Alloc>& l1, const list<T, Alloc>& l2){
         //connect l1 and l2, this function would abort l2;
         typedef typename list<T, Alloc>::iterator iterator;
         iterator l1b = l1.cbegin();
         iterator l1e = l1.cend();
         iterator l2b = l2.cbegin();
         iterator l2e = l2.cend();
-        l2e._node->_next = l1b._node;
-        l1b._node->_prev = l2e._node;
-        l1e._node->_next = l2b._node;
-        l2b._node->_prev = l1e._node;
+
+        l1e._node->_prev->_next = l2b._node;
+        l2b._node->_prev = l1e._node->_prev;
+        l1e._node->_prev = l2e._node->_prev;
+        l2e._node->_prev->_next = l1e._node;
+
+        l2e._node->_next = l2e._node;
+        l2e._node->_prev = l2e._node;
         return l1;
     }
 }

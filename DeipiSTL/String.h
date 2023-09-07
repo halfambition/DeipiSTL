@@ -11,6 +11,7 @@
 #include "Allocator.h"
 #include "Uninitalized.h"
 #include <string.h>
+#include "ReverseIterator.h"
 
 namespace DeipiSTL {
 	template <typename Char, typename Alloc = allocator<Char, deipi_Alloc>>
@@ -106,8 +107,12 @@ namespace DeipiSTL {
 			return finish;
 		}
 
-//		iterator rbegin();
-//		iterator rend();
+        iterator rbegin(){
+            return reverse_iterator<iterator>(end());
+        }
+        iterator rend(){
+            return reverse_iterator<iterator>(begin());
+        }
 
 		const_iterator cbegin() const {
 			return start;

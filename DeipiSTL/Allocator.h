@@ -1,8 +1,8 @@
 #pragma once
 //this head file is a simple encapsulation of Alloc
 //all external users use alloc through this interface
-#ifndef ALLOCATOR_h
-#define ALLOCATOR_h
+#ifndef deipi_ALLOCATOR_h
+#define deipi_ALLOCATOR_h
 
 #include "Alloc.h"
 #include "Construct.h"
@@ -40,4 +40,4 @@ namespace DeipiSTL {
     };
 }
 
-#endif
+#endif      /*deipi_ALLOCATOR_h*/

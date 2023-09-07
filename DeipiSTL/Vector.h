@@ -11,6 +11,7 @@
 #include "Allocator.h"
 #include "Uninitalized.h"
 #include <ostream>
+#include "ReverseIterator.h"
 
 namespace DeipiSTL {
 	template <typename T, typename Alloc = allocator<T, deipi_Alloc>>
@@ -62,7 +63,7 @@ namespace DeipiSTL {
 			allocate_and_copy(vec);
 		}
 		//move constructor
-		vector(vector&& vec) :start(nullptr), finish(nullptr), end_of_storage(nullptr) {
+		vector(vector&& vec)  noexcept :start(nullptr), finish(nullptr), end_of_storage(nullptr) {
 			allocate_and_move(vec);
 		}
 		//destructor
@@ -70,7 +71,7 @@ namespace DeipiSTL {
 
 		//operator overload
 		vector<T, data_allocator>& operator=(const vector& vec);
-		vector<T, data_allocator>& operator=(vector&& vec);
+		vector<T, data_allocator>& operator=(vector&& vec) noexcept ;
 
 	public:
 		//all bellow function bodies are in Vector.cpp
@@ -82,8 +83,12 @@ namespace DeipiSTL {
 			return finish;
 		}
 
-		iterator rbegin();
-		iterator rend();
+		iterator rbegin(){
+            return reverse_iterator<iterator>(end());
+        }
+		iterator rend(){
+            return reverse_iterator<iterator>(begin());
+        }
 
 		const_iterator cbegin() const {
 			return start;
