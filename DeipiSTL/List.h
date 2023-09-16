@@ -139,7 +139,7 @@ namespace DeipiSTL{
         }
         void destroy_node(iterator& iter){
             --_size;
-            Destroy(iter._node);
+            DeipiSTL::Destroy(iter._node);
             dealloc_node(iter._node);
         }
         void erase_aux(node_ptr ptr){
@@ -201,7 +201,7 @@ namespace DeipiSTL{
             erase_aux(iter);
         }
         void clear() {
-            Destroy(begin(), end());
+            DeipiSTL::Destroy(begin(), end());
             data_allocator::Deallocate(_node->_next, _size);
             _size = 0;
         }

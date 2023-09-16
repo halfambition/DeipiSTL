@@ -5,6 +5,7 @@
 //  Created by deipi on 2023/8/23.
 //
 #include "../Vector.h"
+
 namespace DeipiSTL {
 	//here's some interface of vector
 	
@@ -144,7 +145,7 @@ namespace DeipiSTL {
 		return *this;
 	}
 	template <typename T, typename Alloc>
-	vector<T, Alloc>& vector<T, Alloc>::operator=(vector&& vec) {
+	vector<T, Alloc>& vector<T, Alloc>::operator=(vector&& vec) noexcept {
 		if (this != &vec)
 			allocate_and_move(vec);
 		return *this;
@@ -160,7 +161,7 @@ namespace DeipiSTL {
 		if (finish < start)
 			throw "error: index out of range";
 		--finish;
-		DeipiSTL::Destory(finish);
+        DeipiSTL::Destroy(finish);
 	}
 	template <typename T, typename Alloc>
 	typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator pos, const T& val) {
@@ -200,7 +201,7 @@ namespace DeipiSTL {
 		if (!In_Range(start, finish, first) || !In_Range(start, finish, second)) 
 			throw "out of range";
 		iterator last = DeipiSTL::Copy(second, finish, first);
-		DeipiSTL::Destory(last, finish);
+        DeipiSTL::Destroy(last, finish);
 		finish -= (second - first);
 		return first - 1;
 	}

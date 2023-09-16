@@ -36,7 +36,7 @@ namespace DeipiSTL {
                     Construct(&*cur, *first);
             }
             catch (...) {
-                Destory(output, cur);
+                DeipiSTL::Destroy(output, cur);
             }
             return cur;
         }
@@ -77,7 +77,7 @@ namespace DeipiSTL {
                     Construct(&*cur, val);
             }
             catch (...) {
-                Destory(first, cur);
+                DeipiSTL::Destroy(first, cur);
             }
         }
     }
@@ -107,7 +107,7 @@ namespace DeipiSTL {
                     Construct(&*cur, val);
             }
             catch (...) {
-                Destory(first, cur);
+                DeipiSTL::Destroy(first, cur);
             }
             //return last iterator
             return cur;

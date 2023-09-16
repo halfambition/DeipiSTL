@@ -12,6 +12,7 @@
 #include "Uninitalized.h"
 #include <ostream>
 #include "ReverseIterator.h"
+#include "Construct.h"
 
 namespace DeipiSTL {
 	template <typename T, typename Alloc = allocator<T, deipi_Alloc>>

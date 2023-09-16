@@ -18,7 +18,7 @@ namespace DeipiSTL {
 	template <typename Char, typename Alloc>
 	template <typename InputIterator>
 	void basic_string<Char, Alloc>::allocate_and_copy(InputIterator first, InputIterator last) {
-		Destory(start, finish);
+        DeipiSTL::Destroy(start, finish);
 		deallocate();
 
 		size_type n = last - first;
@@ -29,7 +29,7 @@ namespace DeipiSTL {
 
 	template <typename Char, typename Alloc>
 	void basic_string<Char, Alloc>::allocate_and_move(basic_string& str) {
-		Destory(start, finish);
+        DeipiSTL::Destroy(start, finish);
 		deallocate();
 
 		start = str.start;
@@ -156,7 +156,7 @@ namespace DeipiSTL {
 		realloc_aux(size());
 
 		//old
-		//DeipiSTL::Destory(finish + 1, end_of_storage);
+		//DeipiSTL::Destroy(finish + 1, end_of_storage);
 		//end_of_storage = finish;
 	}
 }

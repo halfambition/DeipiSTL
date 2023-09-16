@@ -9,8 +9,15 @@
 #define deipi_ALGORITHMS_h
 #include <cstring>
 #include "TypeTraits.h"
-
+#include <stdio.h>
+#include <vector>
 namespace DeipiSTL {
+    template <typename T>
+    T ABS(T& val) {
+        if(val < 0)
+            return -val;
+        return val;
+    }
 	template <typename ForwardIterator, typename T>
 	void Fill(ForwardIterator first, ForwardIterator last, const T& value) {
 		for (; first != last; ++first)
@@ -188,4 +195,132 @@ namespace DeipiSTL {
 	}
 }
 
+namespace DeipiSTL{
+    //sort
+    namespace {
+        //insert sort
+        template <typename iterator, typename comparator>
+        inline void insert_sort(iterator start, iterator end, const comparator& cmp){
+            for(auto it1 = start; it1 <= end; ++it1)
+                for(auto it2 = it1; it2 > start; --it2){
+                    if(!cmp(*(it2-1), *it2))
+                        Swap(*(it2-1), *it2);
+                }
+        }
+
+        //bubble sort
+        template <typename iterator, typename comparator>
+        inline void bubble_sort(iterator start, iterator end, const comparator& cmp){
+            for(auto it1 = start; it1 != end; ++it1)
+                for(auto it2 = end; it2 > it1; --it2)
+                    if(!cmp(*(it2-1), *it2))
+                        Swap(*(it2-1), *it2);
+        }
+
+        //quick sort
+        template <typename iterator, typename comparator>
+        inline void quick_sort(iterator start, iterator end, const comparator& cmp){
+            static int depth = 1;
+            depth = depth == 1?1:depth+1;
+            if(end - start <= 16)
+                return insert_sort(start, end);
+            if(depth > 16)
+                //heap sort
+                return insert_sort(start, end);
+            if(start >= end)
+                return;
+            auto l = start;
+            auto r = end;
+            auto temp = *l;
+            while(l < r){
+                while(l < r && !cmp(*r, temp)){
+                    --r;
+                }
+                if(l < r){
+                    *l = *r;
+                    ++l;
+                }
+                while(l < r && cmp(*l, temp)){
+                    ++l;
+                }
+                if(l < r){
+                    *r = *l;
+                    --r;
+                }
+            }
+            *l = temp;
+            quick_sort(start, l-1, cmp);
+            quick_sort(l+1, end, cmp);
+        }
+        //heap sort
+
+        //bucket sort
+    }
+    namespace {
+        template <typename RandomAccessIterator, typename comparator>
+        inline void __sort(RandomAccessIterator start, RandomAccessIterator end, comparator cmp, random_access_iterator_tag){
+            quick_sort(start, end, cmp);
+        }
+
+        //handle for other iterators
+        template <typename InputIterator, typename comparator>
+        inline void __sort(InputIterator start, InputIterator end, comparator cmp, input_iterator_tag){
+            printf("only Random Access Iterator can be sorted\n");
+        }
+    }
+
+    template <typename T>
+    struct lessComparator{
+        bool operator()(T& a, T& b) const{
+            return a < b;
+        }
+    };
+    template <typename T>
+    struct greaterComparator{
+        bool operator()(T& a, T& b) const{
+            return a > b;
+        }
+    };
+    template <typename RandomAccessIterator, typename comparator>
+    inline void Sort(RandomAccessIterator start, RandomAccessIterator end, comparator cmp = lessComparator<RandomAccessIterator>()){
+        typedef typename iterator_traits<RandomAccessIterator>::iterator_category    category;
+        //if using 'end', error will generate
+        __sort(start, end-1, cmp, category());
+    }
+}
+
+namespace DeipiSTL {
+    namespace {
+        template <typename InputIterator, typename T>
+        inline InputIterator linear_find(InputIterator start, InputIterator end, const T& val) {
+            for (; start != end; ++start)
+                if (*start == val)
+                    return start;
+            return end;
+        }
+    }
+    template <typename RandomAccessIterator, typename T>
+    inline RandomAccessIterator binary_search(RandomAccessIterator start, RandomAccessIterator end, const T& val){
+        if(end - start <= 16)
+            return linear_find(start, end, val);
+        auto low = start, high = end;
+        while(start <= end){
+            RandomAccessIterator mid = low + ((high - low)>>2);
+            if(*mid == val){
+                return mid;
+            }
+            else if(*mid < val){
+                high = mid - 1;
+            }
+            else if(*mid > val){
+                low = mid + 1;
+            }
+        }
+        return end;
+    }
+    template <typename InputIterator, typename T>
+    inline InputIterator Find(InputIterator start, InputIterator end, const T& val){
+        return linear_find(start, end, val);
+    }
+}
 #endif /* deipi_ALGORITHMS_h */
