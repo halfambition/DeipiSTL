@@ -28,26 +28,12 @@ namespace DeipiSTL {
         p->~T();
     }
 
-    //destroy()
-    template <typename ForwardIterator>
-    inline void Destroy(ForwardIterator* first, ForwardIterator* last) {     //destroy one obj
-        __destroy(first, last);
-    }
     namespace {
-        //judge if value_type contains trivial destructor
-        /*what's trivial destructor, it's a type traitor
-            judge if call destructor based on an object type*/
-        template <typename ForwardIterator, typename T>
-        inline void __destroy(ForwardIterator* first, ForwardIterator* last, T*) {     //destroy one obj
-            typedef typename __type_traits<T>::has_trivial_destructor trivial_destructor;
-            __destroy_aux(first, last, trivial_destructor());
-        }
-
         //if value_type contains trivial non-destructor
         template <typename ForwardIterator>
-        inline void __destroy_aux(ForwardIterator* first, ForwardIterator* last, __false_type) {     //destroy one obj
+        inline void __destroy_aux(ForwardIterator first, ForwardIterator last, __false_type) {     //destroy one obj
             for (; first < last; ++first)
-                DeipiSTL::Destroy(*first);
+                DeipiSTL::Destroy(&*first);
             //'&' is get address symbol, not reference
             //first is iterator not obj
             //so '&*first' is get the address of object which iterator is pointing
@@ -55,9 +41,23 @@ namespace DeipiSTL {
 
         //else if value_type contains trivial destructor
         template <typename ForwardIterator>
-        inline void __destroy_aux(ForwardIterator* first, ForwardIterator* last, __true_type) 
+        inline void __destroy_aux(ForwardIterator first, ForwardIterator last, __true_type)
         { }
+
+        //judge if value_type contains trivial destructor
+        /*what's trivial destructor, it's a type traitor
+            judge if call destructor based on an object type*/
+        template <typename ForwardIterator, typename T>
+        inline void __destroy(ForwardIterator first, ForwardIterator last, T*) {     //destroy one obj
+            typedef typename __type_traits<T>::has_trivial_destructor trivial_destructor;
+            __destroy_aux(first, last, trivial_destructor());
+        }
     //end anonymous namespace
+    }
+    //destroy()
+    template <typename ForwardIterator>
+    inline void Destroy(ForwardIterator first, ForwardIterator last) {     //destroy one obj
+        __destroy(first, last, &*first);
     }
 
     //specialization destroys for char and wchar_t

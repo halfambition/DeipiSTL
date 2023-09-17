@@ -21,4 +21,8 @@ add_executable(DeipiSTL
         DeipiSTL/Vector.h
         DeipiSTL/List.h
         DeipiSTL/ReverseIterator.h
-        DeipiSTL/Deque.h)
+        DeipiSTL/Deque.h
+        DeipiSTL/Matrix.h
+        DeipiSTL/Matrix.h
+        DeipiSTL/TransformMat.h
+)

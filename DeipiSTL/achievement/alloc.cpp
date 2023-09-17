@@ -35,7 +35,7 @@ namespace DeipiSTL {
         //call bug handler
         do {
             //if never assign bad_alloc_handler, then throw exception
-            if (Bad_Alloc_Handler == 0) {
+            if (Bad_Alloc_Handler == nullptr) {
                 //exception
                 throw "bad_alloc";
             }
@@ -72,7 +72,7 @@ namespace DeipiSTL{
         
         mem_block* res = mem_block_chain[Chain_Index(n)];
         
-        if (res == nullptr) {               //if block chain doesn't exist mem block, call refill
+        if (res == nullptr) {               //if a block chain doesn't exist mem block, call refill
             res = Refill(Round_UP(n));
             return (void*)res;
         }
@@ -84,14 +84,15 @@ namespace DeipiSTL{
     //Free
     template<bool threads>
     void second_level_allocator<threads>::Deallocate(void* ptr, size_t n){
-        //if memory ptr pointing to is not multiples of 8, it will pollute mem pool
+        //if memory ptr pointing to is not multiples of eight, it will pollute mem pool
         return first_level_allocator::Deallocate(ptr);
     }
     
     //Reallocate
     template<bool threads>
     void* second_level_allocator<threads>::Reallocate(void* ptr, size_t old_size, size_t new_size){
-        //I assume is use allocate a size of a new memory, then memcpy() the data, return the new address, and deallocate old pointer
+        //I assume is use allocate the size of a new memory, then memcpy() the data,
+        // return the new address, and deallocate old pointer
         if (old_size > MAX_BYTE && new_size > MAX_BYTE) {
             return first_level_allocator::Reallocate(ptr, new_size);
         }
@@ -112,7 +113,7 @@ namespace DeipiSTL{
     //Refill will call Chunk_Alloc to get a lot of memory space blocks, and load them into mem_block_chain
     template<bool threads>
     void* second_level_allocator<threads>::Refill(size_t roundup_size){
-        //default amount of block asked for pool is 20, return 1, and put others in chain
+        //the default amount of block asked for pool is 20, return 1, and put others in chain
         int n_blocks = 20;
         
         //asking for pool
@@ -137,21 +138,21 @@ namespace DeipiSTL{
     }
     
     //Chunk_Alloc try to get memory space from memory pool (memory pool is allocated space between start_mem_pool and end_mem_pool)
-    //if there is enough space, or space more than 1 at least, return directly
+    //if there is enough space, or space more than one at least, return directly
     //otherwise allocate from heap
     template<bool threads>
     char* second_level_allocator<threads>::Chunk_Alloc(size_t size, int& num_blocks){
         char* res;
         size_t remain = end_mem_pool - start_mem_pool;
         size_t requirement = num_blocks * size;
-        size_t get_size = (requirement << 1) + Round_UP(alloc_weight >> 4);
+        size_t get_size = (requirement << 1) + Round_UP(alloc_weight << 1);
         
         //insufficient pool space but more than one block, then return all rest space
         if (remain >= size && remain < requirement) {
             num_blocks = (int)remain / MIN_BYTE;
         }
         else if(remain < size){
-            //simplify SGI STL, delete the step which join the rest pool into chain.
+            //simplify SGI STL, delete the step which join the rest pool into a chain.
             //usage reallocate in first_level directly
             start_mem_pool = (char*)first_level_allocator::Reallocate(start_mem_pool, get_size);
             end_mem_pool = start_mem_pool + get_size;

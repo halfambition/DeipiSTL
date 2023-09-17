@@ -27,7 +27,7 @@ namespace DeipiSTL {
 		end_of_storage = start + vec.size();
 	}
 	template <typename T, typename Alloc>
-	void vector<T, Alloc>::allocate_and_move(vector& vec) {
+	void vector<T, Alloc>::allocate_and_move(vector&& vec) {
 		Destory(start, finish);
 		deallocate();
 
@@ -123,7 +123,7 @@ namespace DeipiSTL {
 		return end_of_storage == finish;
 	}
 
-	//constructor and deconstructor
+	//constructor and deconstruct
 	template <typename T, typename Alloc>
 	template <typename InputIterator>
 	vector<T, Alloc>::vector(InputIterator first, InputIterator last) {
@@ -147,7 +147,7 @@ namespace DeipiSTL {
 	template <typename T, typename Alloc>
 	vector<T, Alloc>& vector<T, Alloc>::operator=(vector&& vec) noexcept {
 		if (this != &vec)
-			allocate_and_move(vec);
+			allocate_and_move(DeipiSTL::move(vec));
 		return *this;
 	}
 

@@ -40,7 +40,7 @@ namespace DeipiSTL {
 		//inner aux
 		void allocate_and_fill(size_type n, const T& value);
 		void allocate_and_copy(const vector& vec);
-		void allocate_and_move(vector& vec);
+		void allocate_and_move(vector&& vec);
 		void deallocate();
 		iterator realloc_aux(size_type new_capacity);
 		void grow_capacity(iterator& new_start, size_type& space_need);
@@ -65,7 +65,7 @@ namespace DeipiSTL {
 		}
 		//move constructor
 		vector(vector&& vec)  noexcept :start(nullptr), finish(nullptr), end_of_storage(nullptr) {
-			allocate_and_move(vec);
+			allocate_and_move(DeipiSTL::move(vec));
 		}
 		//destructor
 		virtual ~vector();

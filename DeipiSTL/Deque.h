@@ -46,11 +46,12 @@ namespace DeipiSTL{
         deque_iterator(T* x, map_pointer y):cur(x), first(*y), last(*y + buffer_size()), node(y) { }
         deque_iterator() : cur(0), first(0), last(0), node(0) { }
         explicit deque_iterator(const iterator& x):cur(x.cur), first(x.first), last(x.last), node(x.node) { }
-        iterator operator=(const iterator& x){
+        iterator& operator=(const iterator& x){
             this->cur = x.cur;
             this->node = x.node;
             this->first = x.first;
             this->last = x.last;
+            return *this;
         }
         static size_t buffer_size(){
             return __deque_buf_size(BufSiz, sizeof(T));
